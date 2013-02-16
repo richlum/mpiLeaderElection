@@ -11,7 +11,7 @@ typedef struct message{
 #define DEBUG
 
 #ifdef DEBUG
-#define DBGMSG printf("\t%d:%s:%d\n",*rank,__FILE__, __LINE__);
+#define DBGMSG printf("\t%d:%s:%d\n",rank,__FILE__, __LINE__);
 #endif
 
 

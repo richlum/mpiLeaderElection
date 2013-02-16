@@ -39,7 +39,7 @@ int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
 	MPI_Status mstat;
 	DBGMSG
 	printf("%d:recv from %d\n",*rank,next_neighbour);
-	MPI_Recv(&msg,sizeof(msg),MPI_INT, next_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,
+	MPI_Recv(&msg,2,MPI_INT, next_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,
 		&mstat);
 	DBGMSG
 	*uid = msg.UID;
