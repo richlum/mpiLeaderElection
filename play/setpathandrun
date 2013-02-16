@@ -1,0 +1,2 @@
+export PATH=/cs/local/lib/pkg/mpich2-1.4.1/bin:$PATH
+mpiexec -n 5 ./hi
