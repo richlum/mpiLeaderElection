@@ -1,0 +1,82 @@
+Name: Richard Lum
+StNo: 41671785
+
+Assign 2 : Leader Election in Bidirectional Rings
+
+To compile the program
+    make all  // minimal progress information, just key points/results
+or
+    make debug // full debugging/progress messages
+
+To run the program
+    make run  // sets path and mpiexec 6 processes. 
+or
+    ./setupandrun  // which is called by make run
+or
+    mpiexec -n 6 ./leaderelection   
+
+
+Notes:
+
+School linux machines appear to have missing link to some needed files
+so the make file calls setupandrun which sets path directories 
+directly to bin files of the mpich installation to compensate.
+
+In debugging mode, most messages start with displaying the rank of the
+process that is reporting the debugging information.  Print buffering
+effects are apparent as the print buffer can and does show messages
+being received before they are sent by the originating node.
+
+Implemented Hirshberg-Sinclair algrorithm for leader election based on
+references below.
+
+Operation in phases.
+1. Every candidate sends out election messages proposeing themselves as i
+    leader in both direction (OUTBOUND).
+2. Messages decrement in distance up to 2^phase nodes away for each phase
+3. If at any node, the message UID is less than the receiving node id
+    forwarding is stopped.  Only if the message UID is greater than
+    all nodes it crosses wil a response be recd by originator.
+4. Once a message has traveled max distance, receiving node sends reply 
+    (INBOUND)
+5. replies (INBOUND) are not blocked and always forwarded 
+    back to originator by all
+6. If originator receives a reply from both left and right, it is 
+    temporal elected leader for that phase.
+7. Only those temporal leaders initiate another bidirectional election
+    message in the next phase. Note that distance is set to 2^phase
+    so each iteration increases the distance that an election proposal
+    must travel before generating a response.  All non temporal leaders, 
+    just particpate in forwarding/filtering but do not originate 
+    OUTBOUND election messages.
+8. This continues on until the first node that receives an OUTBOUND message
+    with their own id.  This means that the message has successfully
+    been passed by all nodes. Every node only passes the message if
+    the message UID is greater than given nodes id.  Target node can
+    only recieve its own ID on an OUTBOUND message if it has maximum
+    UID and is there fore leader.
+9. New leader emits a annoucement message primarily to allow all 
+    participating members to stop participating in election and 
+    register the leader.
+
+
+
+
+
+
+
+References Used:
+
+https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CDAQFjAA&url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FChang_and_Roberts_algorithm&ei=t24gUY-9Kar-iwKS8oDACA&usg=AFQjCNG-7UWLlmW7QLJeroTGpQ3yl4XsBQ&sig2=K1fgM9JwNtYzFriVbm36kg&bvm=bv.42661473,d.cGE
+
+https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&ved=0CEYQFjAC&url=http%3A%2F%2Fwww.cs.rug.nl%2F~eirini%2FDS_slides%2Fleader_election.pdf&ei=QnAgUYa7C6mwigLBs4CIDA&usg=AFQjCNGhhqiP7X3D3BZLiIJdCg2QMFLwRA&sig2=Hk_n-lKhIBuQB6QNDzHT2w&bvm=bv.42661473,d.cGE
+
+https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=4&cad=rja&ved=0CE4QFjAD&url=http%3A%2F%2Fusers.ece.utexas.edu%2F~garg%2Fdist%2Fjbk-slides%2Fchapter13.ppt&ei=QnAgUYa7C6mwigLBs4CIDA&usg=AFQjCNGxFEGnctcdtjhzsHXqmQWR6CfAZw&sig2=VeS77krhIevTZFieLKS0sg&bvm=bv.42661473,d.cGE
+
+https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CDcQFjAA&url=http%3A%2F%2Fwww.cs.utexas.edu%2Fusers%2Florenzo%2Fcorsi%2Fcs380d%2Fpast%2F01F%2Fnotes%2FLeader.ppt&ei=omMgUZnmDamCiwKQooHgAw&usg=AFQjCNHljpXrvvD_ysSEhPMa8jCtb-9L0g&sig2=4wdm_hz8cjbobdozKeYZUQ&bvm=bv.42661473,d.cGE
+
+http://books.google.ca/books?id=NlVBtVPeR0QC&pg=PA111&lpg=PA111&dq=Hirschberg+and+Sinclair&source=bl&ots=6fZ1xZM6wt&sig=URrLJi586sWbeeHcY2CyxwgFaJ4&hl=en&sa=X&ei=-GogUZLYHNHwigKUnIHgBQ&ved=0CD0Q6AEwAQ#v=onepage&q=Hirschberg%20and%20Sinclair&f=false
+
+
+
+

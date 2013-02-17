@@ -33,7 +33,9 @@ void sendmsgNext(message* msg, int* rank, int* size){
 	if (*rank >= (NUM-1))
 	  next_neighbour=0;
 	msent++;
+#ifdef DEBUG
 	printf("%d:%d sending %d %d, sent=%d\n", *rank, next_neighbour, msg->msgtype, msg->UID,msent); 
+#endif
 	MPI_Send(msg,sizeof(msg),MPI_INT, next_neighbour, msg->msgtype, MPI_COMM_WORLD);
 	DBGMSG
 }
@@ -47,7 +49,9 @@ void sendmsgPrev(message* msg, int* rank, int* size){
 	if (*rank ==0 )
 	   next_neighbour = NUM -1 ;
 	msent++;
+#ifdef DEBUG
 	printf("%d:%d sending %d %d, sent=%d\n", *rank, next_neighbour, msg->msgtype, msg->UID,msent); 
+#endif
 	MPI_Send(msg,sizeof(msg),MPI_INT, next_neighbour, msg->msgtype, MPI_COMM_WORLD);
 	DBGMSG
 }
@@ -91,7 +95,9 @@ void checkmsgs(int* rank, int* size,int* id){
 	int count;
 	MPI_Get_count(&mstat, MPI_INT, &count);
 	int source = mstat.MPI_SOURCE;
+#ifdef DEBUG
 	printf("%d:source=%d, uid=%d tag=%d  lngth = %d\n", *rank, mstat.MPI_SOURCE, msg.UID, mstat.MPI_TAG, count );
+#endif
 	
 	DBGMSG
 	
@@ -106,7 +112,9 @@ void checkmsgs(int* rank, int* size,int* id){
 		  sendmsgNext(&msg, rank, size);
 		}else if ((msg.UID > *id)&&(msg.distance==1)){
 		  //respond to message
+#ifdef DEBUG
 		  printf("%d: id=%d, type=%d, uid=%d, dist=%d \n", *rank,*id, msg.msgtype, msg.UID, msg.distance); 
+#endif
 		  msg.msgtype=IN;
 		  msg.distance=1;
 		  DBGMSG
@@ -141,36 +149,49 @@ void checkmsgs(int* rank, int* size,int* id){
 	}else if ((msg.msgtype==IN)){
 	  DBGMSG
 	    if(fromleft(source,*rank,*size)){
-		if (msg.UID==*id)
+		if (msg.UID==*id){
 		  inleft=1;
-		else{
+		}else{
 		  DBGMSG
 		  sendmsgNext(&msg, rank, size);
 		}
 		if (inright)
 		  inleftandright=1;
 	    }else{
-		if (msg.UID==*id)
+		if (msg.UID==*id){
 		  inright=1;
+		}else{
+		  DBGMSG
+		  sendmsgPrev(&msg, rank, size);
+		}
+		if (inleft){
+		  inleftandright=1;
+		}
+	    }
+	    /*else{
+	      //inbound message from right
+	      if (msg.UID==*id)
+		  inleft=1;
 		else{
 		  DBGMSG
 		  sendmsgPrev(&msg, rank, size);
 		}
-		if (inleft)
+		if (inright)
 		  inleftandright=1;
-	    }
+	    */}
 	    //received responses from both sides, we're locally elected 
 	    if (inleftandright){
 		phase++;
       		message msg;
 		msg.msgtype=OUT;  
 		msg.distance=2^phase;  // increase distance of voting  based on phase
+		int newsize=msg.distance;
 		msg.UID=*id; 
-		printf("phase = %d\n",phase);
+		printf("%d:Phase = %d, newdistance = %d\n",*rank,phase, newsize);
 		participant=1;
 		  DBGMSG
-		  sendmsgNext(&msg,rank,size);
-		  sendmsgPrev(&msg,rank,size);
+		  sendmsgNext(&msg,rank,&newsize);
+		  sendmsgPrev(&msg,rank,&newsize);
 	    }
 	    DBGMSG
 	}else if (msg.msgtype==ELECTED){
@@ -201,20 +222,23 @@ void checkmsgs(int* rank, int* size,int* id){
 }
 
 int main(int argc,char** argv){
-	int rank,
+	int rank;
 	int PNUM = 113;
 	if (argc>1){
 		PNUM=atoi(argv[1]);
 	}
+#ifdef DEBUG
 	printf("PNUM = %d\n",PNUM);
-
+#endif
 	MPI_Init(&argc,&argv);
 	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 	MPI_Comm_size(MPI_COMM_WORLD,&NUM);
+#ifdef DEBUG
 	printf("%d:size of world = %d\n",rank, NUM);
-
+#endif
+	
 	int id= (rank+1)*PNUM % NUM;
-	printf("%d:started rank=%d, id=%d\n",rank, rank, id);
+	printf("%d:started rank=%d, id=%d, world = %d\n",rank, rank, id, NUM);
 	if (NUM==1){
 	  leader=id;
 	  //defacto leader
