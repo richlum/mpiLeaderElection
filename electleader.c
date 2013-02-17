@@ -22,6 +22,7 @@ int inleft=0;
 int inright=0;
 int inleftandright=0;
 int phase =0;
+int NUM;
 
 // send msg to next higher rank
 void sendmsgNext(message* msg, int* rank, int* size){
@@ -29,7 +30,7 @@ void sendmsgNext(message* msg, int* rank, int* size){
 	if (msg->distance<=0)
 	  return;
 	int next_neighbour = (*rank)+1;
-	if (*rank >= ((*size)-1))
+	if (*rank >= (NUM-1))
 	  next_neighbour=0;
 	msent++;
 	printf("%d:%d sending %d %d, sent=%d\n", *rank, next_neighbour, msg->msgtype, msg->UID,msent); 
@@ -44,7 +45,7 @@ void sendmsgPrev(message* msg, int* rank, int* size){
 	  return;
 	int next_neighbour = (*rank)-1;
 	if (*rank ==0 )
-	   next_neighbour = *size -1 ;
+	   next_neighbour = NUM -1 ;
 	msent++;
 	printf("%d:%d sending %d %d, sent=%d\n", *rank, next_neighbour, msg->msgtype, msg->UID,msent); 
 	MPI_Send(msg,sizeof(msg),MPI_INT, next_neighbour, msg->msgtype, MPI_COMM_WORLD);
@@ -57,7 +58,7 @@ void sendmsgPrev(message* msg, int* rank, int* size){
 int fromleft(int source, int self, int size){
     if (self == 0){
       // rank 0, node to left is max rank
-      if(source==(size-1)){
+      if(source==(NUM-1)){
 	return 1;
       }
     }else{
@@ -67,6 +68,15 @@ int fromleft(int source, int self, int size){
       }
     }
     return 0;
+}
+
+void announce(int rank, int id, int size){
+    message msg;
+    msg.msgtype=ELECTED;
+    msg.distance=size;
+    msg.UID=id;
+    sendmsgNext(&msg, &rank, &size);
+  
 }
 
 
@@ -104,6 +114,7 @@ void checkmsgs(int* rank, int* size,int* id){
 		}else if (msg.UID == *id){
 		  DBGMSG
 		  leader=*id;
+		  announce(*rank,*id,NUM);
 		}   
 		DBGMSG
 	    }else{
@@ -123,10 +134,11 @@ void checkmsgs(int* rank, int* size,int* id){
 		}else if (msg.UID == *id){
 		  DBGMSG
 		  leader=*id;
+		  announce(*rank,*id,NUM);
 		}     
 		DBGMSG
 	    }
-	}else if ((msg.msgtype=IN)){
+	}else if ((msg.msgtype==IN)){
 	  DBGMSG
 	    if(fromleft(source,*rank,*size)){
 		if (msg.UID==*id)
@@ -161,6 +173,26 @@ void checkmsgs(int* rank, int* size,int* id){
 		  sendmsgPrev(&msg,rank,size);
 	    }
 	    DBGMSG
+	}else if (msg.msgtype==ELECTED){
+	   if (msg.UID>*id){
+	     leader=msg.UID;
+	     if (msg.distance>=0){
+	       announce(*rank,leader,msg.distance -1);
+	     }
+	   }else if (msg.UID<*id){
+	     //claimed leader is not maximum, restart election process 
+	     	message emsg;
+		emsg.msgtype=OUT;  // to handle initiation vs response seperately
+		emsg.distance=1;  // to limit distance of 'local' elections based on phase
+		emsg.UID=*id;  
+		participant=1;
+		sendmsgNext(&emsg,rank,size);
+		sendmsgPrev(&emsg,rank,size);
+	   }else{
+	     //we received a message confirming we are the leader
+	     leader=*id;
+	   }
+	     
 	}else{
 	  fprintf (stderr, "Error unknown msgtype (%d)\n",msg.msgtype);
 	}
@@ -169,8 +201,7 @@ void checkmsgs(int* rank, int* size,int* id){
 }
 
 int main(int argc,char** argv){
-
-	int rank, NUM;
+	int rank;
 	int PNUM = 113;
 	if (argc>1){
 		PNUM=atoi(argv[1]);
