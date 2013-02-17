@@ -3,24 +3,29 @@
 #include <mpi.h>
 #include "electleader.h"
 
-
-
+int msent = 0;
+int mrecved = 0;
+// using msgtype(ELECTION,ELECTED)  as tag send msgs to next highest rank
+// recv msg from next lower rank unless root, receive msg from lowest rank
 void sendmsg(message* msg, int* rank, int* size){
 	DBGMSG
 	int next_neighbour = (*rank+1)%(*size);
+	msent++;
+	printf("%d:%d sending %d %d\n", *rank, next_neighbour, msg->msgtype, msg->UID); 
 	MPI_Send(msg,sizeof(msg),MPI_INT, next_neighbour, msg->msgtype, MPI_COMM_WORLD);
 	DBGMSG
 }
 
-void startelection(message* msg, int* participant,int* rank,int* size){
-	DBGMSG
-	//mark self as a participant
-	*participant=1;
-	int next_neighbour = (*rank+1)%(*size);
-	//  *data, qty, type, dest, tag, mpi_comm
-	MPI_Send(msg,2,MPI_INT, next_neighbour, msg->msgtype,MPI_COMM_WORLD); 
-	DBGMSG
-} 
+// void startelection(message* msg, int* participant,int* rank,int* size){
+// 	DBGMSG
+// 	//mark self as a participant
+// 	*participant=1;
+// 	int next_neighbour = (*rank+1)%(*size);
+// 	msent++;
+// 	//  *data, qty, type, dest, tag, mpi_comm
+// 	MPI_Send(msg,2,MPI_INT, next_neighbour, msg->msgtype,MPI_COMM_WORLD); 
+// 	DBGMSG
+// } 
 
 void startleading( int* id, int* rank, int* size){
     DBGMSG
@@ -28,6 +33,8 @@ void startleading( int* id, int* rank, int* size){
     message msg;
     msg.msgtype = ELECTED;
     msg.UID = *id;
+    printf("%d:%d sending %d %d\n", *rank, next_neighbour, msg.msgtype, msg.UID); 
+    msent++;
     MPI_Send(&msg,sizeof(msg),MPI_INT, next_neighbour, msg.msgtype, MPI_COMM_WORLD);
     DBGMSG
 }
@@ -35,28 +42,41 @@ void startleading( int* id, int* rank, int* size){
 int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
 	DBGMSG
 	message msg;
-	int next_neighbour = (*rank-1)%(*size);
+	int next_neighbour;
+	if (*rank!=0)
+	  next_neighbour= (*rank)-1;
+	else
+	  next_neighbour =(*size) -1;
+	printf("%d:receive from %d\n",*rank, next_neighbour);
 	MPI_Status mstat;
 	DBGMSG
-	printf("%d:recv from %d\n",*rank,next_neighbour);
-	MPI_Recv(&msg,2,MPI_INT, next_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,
+	MPI_Recv(&msg,sizeof(msg),MPI_INT, next_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,
 		&mstat);
+	printf("%d:%d recv %d %d\n", *rank, next_neighbour, msg.msgtype, msg.UID); 
+	mrecved++;
+	int count;
+	MPI_Get_count(&mstat, MPI_INT, &count);
+	printf("%d:source=%d, uid=%d tag=%d  lngth = %d\n", *rank, mstat.MPI_SOURCE, msg.UID, mstat.MPI_TAG, count );
 	DBGMSG
 	*uid = msg.UID;
 	if (msg.msgtype==ELECTION){
-		if (*uid>*id){	
+		if (*uid>*id){
+			//foward msg
 			*participant=1;
+			printf("%d: forwarding msg\n);
 			sendmsg(&msg,rank, size);	
 		}else if (*uid<*id){
 			if (*participant==0){
+				//rewrite msg with own uid and send
+				printf("%d: substutition msg uid %d to %d\n",*rank,msg.UID,*id);
 				msg.UID=*id;
 				*participant=1;
 				sendmsg(&msg,rank, size);
 				DBGMSG
 			}else{
-			  DBGMSG
-			  return -1;
-			//discard msg, process already sent larger uid
+			      DBGMSG
+			      return -1;
+			      //discard msg, process already sent larger uid
 			}
 		}else if (*uid == *id){
 			//we got back our own id, this process is a leader
@@ -67,6 +87,7 @@ int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
 	}else if (msg.msgtype==ELECTED){
 		// mark self non participant, forward message, save leader
 		*participant=0;
+		printf("%d:forwarding elected message\n",*rank);
 		sendmsg(&msg,rank, size);
 		DBGMSG
 		return msg.UID;
@@ -85,7 +106,6 @@ int main(int argc,char** argv){
 	int leader=-1;
 	//mark initially as non participant
 	int participant =0;
-	int mrecved=0,msent=0;	
 	int PNUM = 11;
 	if (argc>1){
 		PNUM=atoi(argv[1]);
@@ -101,9 +121,9 @@ int main(int argc,char** argv){
 	printf("%d:started rank=%d, id=%d\n",rank, rank, id);
 	if (NUM==1){
 	  leader=id;
-	  
+	  //defacto leader
 	}else if (leader==-1){
-		//no leader, start election
+		//no leader, start election, propose self as leader
 		message msg;
 		msg.msgtype=ELECTION;
 		msg.UID=id;

@@ -8,10 +8,12 @@ typedef struct message{
 	int UID;
 }message;
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define DBGMSG printf("\t%d:%s:%d\n",*rank,__FILE__, __LINE__);
+#else
+#define DBGMSG
 #endif
 
 
