@@ -5,13 +5,14 @@
 
 int msent = 0;
 int mrecved = 0;
+int participant =0;
 // using msgtype(ELECTION,ELECTED)  as tag send msgs to next highest rank
 // recv msg from next lower rank unless root, receive msg from lowest rank
 void sendmsg(message* msg, int* rank, int* size){
 	DBGMSG
 	int next_neighbour = (*rank+1)%(*size);
 	msent++;
-	printf("%d:%d sending %d %d\n", *rank, next_neighbour, msg->msgtype, msg->UID); 
+	printf("%d:%d sending %d %d, sent=%d\n", *rank, next_neighbour, msg->msgtype, msg->UID,msent); 
 	MPI_Send(msg,sizeof(msg),MPI_INT, next_neighbour, msg->msgtype, MPI_COMM_WORLD);
 	DBGMSG
 }
@@ -27,16 +28,51 @@ void sendmsg(message* msg, int* rank, int* size){
 // 	DBGMSG
 // } 
 
-void startleading( int* id, int* rank, int* size){
+int startleading( int* id, int* rank, int* size){
     DBGMSG
     int next_neighbour = (*rank+1)%(*size);
     message msg;
+    MPI_Status mstat;
     msg.msgtype = ELECTED;
     msg.UID = *id;
-    printf("%d:%d sending %d %d\n", *rank, next_neighbour, msg.msgtype, msg.UID); 
     msent++;
+    printf("%d:%d Leader sending %d %d, sent=%d\n", *rank, next_neighbour, msg.msgtype, msg.UID, msent); 
     MPI_Send(&msg,sizeof(msg),MPI_INT, next_neighbour, msg.msgtype, MPI_COMM_WORLD);
+  
+    // next message should confirm we are the leader
+    int prev_neighbour = (*size) -1;
+    if (*rank!=0)
+      prev_neighbour = (*rank) -1;
+    //printf("prev neighbour = %d\n",prev_neighbour);
+    MPI_Recv(&msg,sizeof(msg),MPI_INT, prev_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,&mstat);
+    mrecved++;
+    // MPI_Recv is not suppose to overwrite source (4th param = prev_neighbour) but it does
+    // resulting in odd values for prev_neighbour
+    //printf("%d:%d recv %d %d, recvd = %d\n", *rank, prev_neighbour, msg.msgtype, msg.UID, mrecved); 
+    int count;
+    MPI_Get_count(&mstat, MPI_INT, &count);
+    printf("%d:source=%d, uid=%d tag=%d  lngth = %d\n", *rank, mstat.MPI_SOURCE, msg.UID, mstat.MPI_TAG, count );
     DBGMSG
+    if (msg.msgtype==ELECTED){
+      //someone else was elected
+      if (msg.UID>*id){
+	//accept it, someone else has higher id
+	return msg.UID;
+      }
+      if(msg.UID==*id){
+	//confirmed, we are elected
+	return *id;
+      }
+      //otherwise someone with lower id was elected
+    }
+    // received a election message or someone with lower id was elected
+    // start election process again..
+
+    msg.msgtype=ELECTION;
+    msg.UID=*id;
+    participant=1;
+    sendmsg(&msg,rank,size);
+    return -1;
 }
 
 int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
@@ -47,13 +83,13 @@ int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
 	  next_neighbour= (*rank)-1;
 	else
 	  next_neighbour =(*size) -1;
-	printf("%d:receive from %d\n",*rank, next_neighbour);
+	//printf("%d:receive from %d\n",*rank, next_neighbour);
 	MPI_Status mstat;
 	DBGMSG
 	MPI_Recv(&msg,sizeof(msg),MPI_INT, next_neighbour, MPI_ANY_TAG, MPI_COMM_WORLD,
 		&mstat);
-	printf("%d:%d recv %d %d\n", *rank, next_neighbour, msg.msgtype, msg.UID); 
 	mrecved++;
+	//printf("%d:%d recv %d %d, recvd = %d\n", *rank, next_neighbour, msg.msgtype, msg.UID, mrecved); 
 	int count;
 	MPI_Get_count(&mstat, MPI_INT, &count);
 	printf("%d:source=%d, uid=%d tag=%d  lngth = %d\n", *rank, mstat.MPI_SOURCE, msg.UID, mstat.MPI_TAG, count );
@@ -80,9 +116,9 @@ int checkmsgs(int* uid,int* participant,int* rank, int* size,int* id){
 			}
 		}else if (*uid == *id){
 			//we got back our own id, this process is a leader
-			startleading(id,rank,size);
+			int newleader = startleading(id,rank,size);
 			DBGMSG
-			return *id;
+			return newleader;
 		}
 	}else if (msg.msgtype==ELECTED){
 		// mark self non participant, forward message, save leader
@@ -105,8 +141,7 @@ int main(int argc,char** argv){
 	int rank, NUM;
 	int leader=-1;
 	//mark initially as non participant
-	int participant =0;
-	int PNUM = 11;
+	int PNUM = 113;
 	if (argc>1){
 		PNUM=atoi(argv[1]);
 	}
