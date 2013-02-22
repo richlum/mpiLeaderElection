@@ -9,7 +9,8 @@ all:	electleader
 clean:
 	rm electleader 
 run:
-	./setpathandrun
+	mpiexec -n 4 ./electleader
+
 
 debug:  electleader.c
 	$(CC) $(DFLAG) $(CFLAGS) $^ -o electleader

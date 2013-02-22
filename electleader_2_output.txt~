@@ -1,32 +1,59 @@
-rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 2 ./electleader
-PNUM = 11
-PNUM = 11
-0:size of world = 2
-0:started rank=0, id=1
-
-  0:1 sending 1 1
-  0:receive from 1
-
-1:size of world = 2
-1:started rank=1, id=0
-    
-    1:0 sending 1 0
-    1:receive from 0
-    0:2 recv 1 0
-    0:source=1, uid=0 tag=1  lngth = 4
-    0:receive from 1
-    
-    1:2 recv 1 1
-    1:source=0, uid=1 tag=1  lngth = 4
-1: forwarding msg
-1:0 sending 1 1
-1:receive from 0
-1:0 recv 2 1
-1:source=0, uid=1 tag=2  lngth = 8
-1:forwarding elected message
-1:0 sending 2 1
-rank=1, id=0, leader=1, mrecved=2, msent=3
-0:2 recv 1 1
-0:source=1, uid=1 tag=1  lngth = 4
-0:1 sending 2 1
-rank=0, id=1, leader=1, mrecved=2, msent=2
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 3 ./electleader 
+PNUM = 113
+PNUM = 113
+PNUM = 113
+2:size of world = 3
+2:started rank=2, id=0
+2:0 sending 10 0, sent=1
+2:1 sending 10 0, sent=2
+0:size of world = 3
+0:started rank=0, id=2
+0:1 sending 10 2, sent=1
+1:size of world = 3
+1:started rank=1, id=1
+1:2 sending 10 1, sent=1
+0:2 sending 10 2, sent=2
+1:0 sending 10 1, sent=2
+2:source=1, uid=1 tag=10  lngth = 4
+0:source=2, uid=0 tag=10  lngth = 4
+0:source=1, uid=1 tag=10  lngth = 4
+1:source=2, uid=0 tag=10  lngth = 4
+1:source=0, uid=2 tag=10  lngth = 4
+1:0 sending 11 2, sent=3
+0:source=1, uid=2 tag=11  lngth = 4
+0:2 sending 11 2, sent=3
+2:1 sending 11 1, sent=3
+1:source=2, uid=1 tag=11  lngth = 4
+1:0 sending 11 1, sent=4
+2:source=0, uid=2 tag=10  lngth = 4
+2:1 sending 11 2, sent=4
+2:source=0, uid=2 tag=11  lngth = 4
+1:source=2, uid=2 tag=11  lngth = 4
+1:0 sending 11 2, sent=5
+0:source=1, uid=1 tag=11  lngth = 4
+0:2 sending 11 1, sent=4
+0:source=1, uid=2 tag=11  lngth = 4
+0:2 sending 11 2, sent=5
+0:source=2, uid=2 tag=11  lngth = 4
+2:0 sending 11 2, sent=5
+2:source=0, uid=1 tag=11  lngth = 4
+2:0 sending 11 1, sent=6
+2:source=0, uid=2 tag=11  lngth = 4
+2:0 sending 11 2, sent=7
+0:1 sending 11 2, sent=6
+phase = 1
+0:1 sending 10 2, sent=7
+0:2 sending 10 2, sent=8
+0:source=2, uid=1 tag=11  lngth = 4
+0:1 sending 11 1, sent=9
+phase = 2
+0:1 sending 10 2, sent=10
+0:2 sending 10 2, sent=11
+0:source=1, uid=1 tag=10  lngth = 4
+0:source=2, uid=2 tag=11  lngth = 4
+0:1 sending 11 2, sent=12
+phase = 3
+0:1 sending 10 2, sent=13
+0:2 sending 10 2, sent=14
+1:source=0, uid=2 tag=11  lngth = 4
+1:2 sending 11 2, sent=6

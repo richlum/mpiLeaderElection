@@ -2,15 +2,12 @@
 #include <stdio.h>
 #include <mpi.h>
 #include "electleader.h"
-
-// using Hirschberg-Sinclair algorithm
-// ref https://docs.google.com/viewer?a=v&q=cache:qqtoGluBypYJ:www.di.univaq.it/~proietti/slide_algdist2010/2-LE.ppt+&hl=en&gl=ca&pid=bl&srcid=ADGEESguv4jdZjjV4ypRKj3niGI9xY-yzajprhOzWggCKICUK63i3y4uHABByju8VasWsWanhXMFpcSBgRf3t2zv0InLcJP_yhLeiYzeehPt3un0W-el4qbNdVMczN8y0vJ_4KcgFloz&sig=AHIEtbSkLeUHbb8UPfZdUrzhimjbWpcOvQ
-//     https://docs.google.com/viewer?pid=bl&srcid=ADGEEShymSElfUGsYjYXWcQbIr2s9sBjpPINbaZpQ3IbBwkaxoG5TAZ7Ppe_x5MeJU2foimQ-zsc_dFjGJAXWwaG63HfwjeUMW367e6y3OE_uToIFfMZRa7zfntHb756k8GnpO_5IQtK&q=cache%3A3k7P69nWwGYJ%3Awww.cs.utexas.edu%2Fusers%2Florenzo%2Fcorsi%2Fcs380d%2Fpast%2F01F%2Fnotes%2FLeader.ppt%20&docid=245c8f8f6d8d44eab6dd1b0248cd2e03&a=bi&pagenumber=28&w=703
-// send out messages left and right 
-// receivers only allow messages to travel 2^phase  away from originator (decr cntr as msg travels)
-// each phase elects local leaders based on node receiving OK from both left and right side
-// stop when (2^phase) is greater than n/2 - message travels at least half way round so
-//   elected node must receive confirmation from all nodes in the circle.
+#include <math.h>
+//# ############################
+//# richardlum13@gmail.com
+//# 20130217
+//# cpsc 417
+//# assign 2
 
 
 
@@ -109,10 +106,14 @@ void checkmsgs(int* rank, int* size,int* id){
 		  //decr distance and forward message
 		  msg.distance--;
 		  DBGMSG
+#ifdef DEBUG
+		  printf("%d,%d:propagating %d, distance set to %d",*rank,*id, msg.UID, msg.distance);
+#endif
 		  sendmsgNext(&msg, rank, size);
 		}else if ((msg.UID > *id)&&(msg.distance==1)){
 		  //respond to message
 #ifdef DEBUG
+		  printf("%d, respoding to %d, distance = %d\n",*rank, msg.UID,msg.distance);
 		  printf("%d: id=%d, type=%d, uid=%d, dist=%d \n", *rank,*id, msg.msgtype, msg.UID, msg.distance); 
 #endif
 		  msg.msgtype=IN;
@@ -123,7 +124,16 @@ void checkmsgs(int* rank, int* size,int* id){
 		  DBGMSG
 		  leader=*id;
 		  announce(*rank,*id,NUM);
-		}   
+		}else if ((msg.distance <=1)||(msg.UID<*id)){
+#ifdef DEBUG
+		  printf("%d,%d: Stopping msg\n",*rank,*id);
+		  printf("%d: msg.UID = %d, msg.distance = %d\n", *rank, msg.UID, msg.distance);
+#endif
+		}else {
+		  printf("%d,%d: unexpected case - stopped\n",*rank,*id);
+		  printf("%d: msg.UID = %d, msg.distance = %d\n", *rank, msg.UID, msg.distance);
+		}
+
 		DBGMSG
 	    }else{
 		DBGMSG
@@ -173,8 +183,8 @@ void checkmsgs(int* rank, int* size,int* id){
 	    if (inleftandright){
 		phase++;
       		message msg;
-		msg.msgtype=OUT;  
-		msg.distance=2^phase;  // increase distance of voting  based on phase
+		msg.msgtype=OUT;
+		msg.distance=pow(2,phase);  // increase distance of voting  based on phase
 		int newsize=msg.distance;
 		msg.UID=*id; 
 		printf("%d:Phase = %d, newdistance = %d\n",*rank,phase, newsize);

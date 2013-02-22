@@ -4,56 +4,114 @@ PNUM = 113
 PNUM = 113
 2:size of world = 3
 2:started rank=2, id=0
+	2:electleader.c:28
 2:0 sending 10 0, sent=1
-2:1 sending 10 0, sent=2
-0:size of world = 3
-0:started rank=0, id=2
-0:1 sending 10 2, sent=1
 1:size of world = 3
 1:started rank=1, id=1
+	1:electleader.c:28
+0:size of world = 3
+0:started rank=0, id=2
+	0:electleader.c:28
+0:1 sending 10 2, sent=1
+	2:electleader.c:37
+	2:electleader.c:42
+2:1 sending 10 0, sent=2
+	2:electleader.c:51
+	2:electleader.c:76
 1:2 sending 10 1, sent=1
-0:2 sending 10 2, sent=2
+	1:electleader.c:37
+	1:electleader.c:42
 1:0 sending 10 1, sent=2
-2:source=1, uid=1 tag=10  lngth = 4
-0:source=2, uid=0 tag=10  lngth = 4
-0:source=1, uid=1 tag=10  lngth = 4
+	1:electleader.c:51
+	1:electleader.c:76
 1:source=2, uid=0 tag=10  lngth = 4
+	1:electleader.c:86
+	1:electleader.c:89
+	1:electleader.c:110
+	1:electleader.c:127
+	1:electleader.c:178
+	1:electleader.c:76
 1:source=0, uid=2 tag=10  lngth = 4
-1:0 sending 11 2, sent=3
-0:source=1, uid=2 tag=11  lngth = 4
-0:2 sending 11 2, sent=3
-2:1 sending 11 1, sent=3
-1:source=2, uid=1 tag=11  lngth = 4
-1:0 sending 11 1, sent=4
-2:source=0, uid=2 tag=10  lngth = 4
-2:1 sending 11 2, sent=4
-2:source=0, uid=2 tag=11  lngth = 4
-1:source=2, uid=2 tag=11  lngth = 4
-1:0 sending 11 2, sent=5
-0:source=1, uid=1 tag=11  lngth = 4
-0:2 sending 11 1, sent=4
-0:source=1, uid=2 tag=11  lngth = 4
-0:2 sending 11 2, sent=5
-0:source=2, uid=2 tag=11  lngth = 4
-2:0 sending 11 2, sent=5
-2:source=0, uid=1 tag=11  lngth = 4
-2:0 sending 11 1, sent=6
-2:source=0, uid=2 tag=11  lngth = 4
-2:0 sending 11 2, sent=7
-0:1 sending 11 2, sent=6
-phase = 1
-0:1 sending 10 2, sent=7
-0:2 sending 10 2, sent=8
-0:source=2, uid=1 tag=11  lngth = 4
-0:1 sending 11 1, sent=9
-phase = 2
-0:1 sending 10 2, sent=10
-0:2 sending 10 2, sent=11
+	1:electleader.c:86
+	1:electleader.c:89
+	0:electleader.c:37
+	0:electleader.c:42
+0:2 sending 10 2, sent=2
+	0:electleader.c:51
+	0:electleader.c:76
+0:source=2, uid=0 tag=10  lngth = 4
+	0:electleader.c:86
+	0:electleader.c:89
+	0:electleader.c:91
+	0:electleader.c:108
+	0:electleader.c:178
+	0:electleader.c:76
 0:source=1, uid=1 tag=10  lngth = 4
-0:source=2, uid=2 tag=11  lngth = 4
-0:1 sending 11 2, sent=12
-phase = 3
-0:1 sending 10 2, sent=13
-0:2 sending 10 2, sent=14
-1:source=0, uid=2 tag=11  lngth = 4
-1:2 sending 11 2, sent=6
+	0:electleader.c:86
+	0:electleader.c:89
+	1:electleader.c:91
+1: id=1, type=10, uid=2, dist=1 
+	1:electleader.c:102
+	1:electleader.c:42
+1:0 sending 11 2, sent=3
+	1:electleader.c:51
+	1:electleader.c:108
+	1:electleader.c:178
+	1:electleader.c:76
+2:source=1, uid=1 tag=10  lngth = 4
+	2:electleader.c:86
+	0:electleader.c:110
+	0:electleader.c:127
+	0:electleader.c:178
+	0:electleader.c:76
+0:source=1, uid=2 tag=11  lngth = 4
+	0:electleader.c:86
+	0:electleader.c:130
+	0:electleader.c:174
+	0:electleader.c:178
+	0:electleader.c:76
+	2:electleader.c:89
+	2:electleader.c:91
+2: id=0, type=10, uid=1, dist=1 
+	2:electleader.c:102
+	2:electleader.c:42
+2:1 sending 11 1, sent=3
+	1:source=2, uid=1 tag=11  lngth = 4
+	1:electleader.c:86
+	1:electleader.c:130
+	1:electleader.c:174
+2:electleader.c:51
+	1:electleader.c:178
+	1:electleader.c:76
+	2:electleader.c:108
+	2:electleader.c:178
+	2:electleader.c:76
+2:source=0, uid=2 tag=10  lngth = 4
+	2:electleader.c:86
+	2:electleader.c:89
+	2:electleader.c:91
+2: id=0, type=10, uid=2, dist=1 
+	2:electleader.c:102
+	2:electleader.c:42
+2:1 sending 11 2, sent=4
+1:source=2, uid=2 tag=11  lngth = 4
+	1:electleader.c:86
+	1:electleader.c:130
+		2:electleader.c:51
+	2:electleader.c:108
+	2:electleader.c:178
+	1:electleader.c:144
+	1:electleader.c:42
+1:0 sending 11 2, sent=4
+2:electleader.c:76
+	1:electleader.c:51
+	1:electleader.c:174
+	1:electleader.c:178
+	1:electleader.c:76
+0:source=1, uid=2 tag=11  lngth = 4
+	0:electleader.c:86
+	0:electleader.c:130
+	0:electleader.c:174
+	0:electleader.c:178
+	0:electleader.c:76
+^Cmpiexec: killing job...
