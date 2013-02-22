@@ -1,0 +1,197 @@
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 3 ./electleader
+0:started rank=0, id=2, world = 3
+2:started rank=2, id=0, world = 3
+rank=2, id=0, leader=2, mrecved=11, msent=12
+0:Phase = 1, newdistance = 2
+0:Phase = 2, newdistance = 4
+0:Phase = 3, newdistance = 8
+rank=0, id=2, leader=2, mrecved=7, msent=10
+1:started rank=1, id=1, world = 3
+rank=1, id=1, leader=2, mrecved=11, msent=11
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 4 ./electleader
+0:started rank=0, id=1, world = 4
+2:started rank=2, id=3, world = 4
+3:started rank=3, id=0, world = 4
+1:started rank=1, id=2, world = 4
+2:Phase = 1, newdistance = 2
+2:Phase = 2, newdistance = 4
+rank=3, id=0, leader=3, mrecved=7, msent=8
+rank=0, id=1, leader=3, mrecved=8, msent=8
+rank=2, id=3, leader=3, mrecved=6, msent=8
+rank=1, id=2, leader=3, mrecved=9, msent=8
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 7 ./electleader
+0:started rank=0, id=1, world = 7
+1:started rank=1, id=2, world = 7
+3:started rank=3, id=4, world = 7
+2:started rank=2, id=3, world = 7
+6:started rank=6, id=0, world = 7
+4:started rank=4, id=5, world = 7
+5:started rank=5, id=6, world = 7
+5:Phase = 1, newdistance = 2
+4:Phase = 1, newdistance = 2
+4:Phase = 2, newdistance = 4
+5:Phase = 2, newdistance = 4
+4:Phase = 3, newdistance = 8
+1:Phase = 1, newdistance = 2
+1:Phase = 2, newdistance = 4
+4:Phase = 4, newdistance = 16
+1:Phase = 3, newdistance = 8
+4:Phase = 5, newdistance = 32
+5:Phase = 3, newdistance = 8
+rank=5, id=6, leader=6, mrecved=17, msent=10
+rank=0, id=1, leader=6, mrecved=16, msent=16
+rank=6, id=0, leader=6, mrecved=14, msent=15
+rank=1, id=2, leader=6, mrecved=15, msent=19
+rank=3, id=4, leader=6, mrecved=16, msent=16
+rank=2, id=3, leader=6, mrecved=18, msent=15
+rank=4, id=5, leader=6, mrecved=13, msent=20
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 12 ./electleader
+1:started rank=1, id=10, world = 12
+2:started rank=2, id=3, world = 12
+4:started rank=4, id=1, world = 12
+5:started rank=5, id=6, world = 12
+7:started rank=7, id=4, world = 12
+3:started rank=3, id=8, world = 12
+6:started rank=6, id=11, world = 12
+3:Phase = 1, newdistance = 2
+0:started rank=0, id=5, world = 12
+6:Phase = 1, newdistance = 2
+5:Phase = 1, newdistance = 2
+5:Phase = 2, newdistance = 4
+6:Phase = 2, newdistance = 4
+3:Phase = 2, newdistance = 4
+5:Phase = 3, newdistance = 8
+1:Phase = 1, newdistance = 2
+6:Phase = 3, newdistance = 8
+8:started rank=8, id=9, world = 12
+10:started rank=10, id=7, world = 12
+9:started rank=9, id=2, world = 12
+11:started rank=11, id=0, world = 12
+1:Phase = 2, newdistance = 4
+8:Phase = 1, newdistance = 2
+1:Phase = 3, newdistance = 8
+10:Phase = 1, newdistance = 2
+1:Phase = 4, newdistance = 16
+4:Phase = 1, newdistance = 2
+3:Phase = 3, newdistance = 8
+4:Phase = 2, newdistance = 4
+11:Phase = 1, newdistance = 2
+10:Phase = 2, newdistance = 4
+11:Phase = 2, newdistance = 4
+5:Phase = 4, newdistance = 16
+1:Phase = 5, newdistance = 32
+6:Phase = 4, newdistance = 16
+rank=6, id=11, leader=11, mrecved=21, msent=12
+rank=7, id=4, leader=11, mrecved=14, msent=14
+rank=8, id=9, leader=11, mrecved=15, msent=14
+rank=9, id=2, leader=11, mrecved=17, msent=16
+rank=10, id=7, leader=11, mrecved=18, msent=19
+rank=11, id=0, leader=11, mrecved=17, msent=22
+rank=0, id=5, leader=11, mrecved=21, msent=18
+rank=1, id=10, leader=11, mrecved=17, msent=19
+rank=2, id=3, leader=11, mrecved=19, msent=19
+rank=4, id=1, leader=11, mrecved=23, msent=27
+rank=5, id=6, leader=11, mrecved=22, msent=27
+rank=3, id=8, leader=11, mrecved=22, msent=21
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 21 ./electleader
+0:started rank=0, id=8, world = 21
+1:started rank=1, id=16, world = 21
+1:Phase = 1, newdistance = 2
+1:Phase = 2, newdistance = 4
+2:started rank=2, id=3, world = 21
+2:Phase = 1, newdistance = 2
+3:started rank=3, id=11, world = 21
+3:Phase = 1, newdistance = 2
+3:Phase = 2, newdistance = 4
+3:Phase = 3, newdistance = 8
+4:started rank=4, id=19, world = 21
+4:Phase = 1, newdistance = 2
+4:Phase = 2, newdistance = 4
+4:Phase = 3, newdistance = 8
+5:started rank=5, id=6, world = 21
+6:started rank=6, id=14, world = 21
+6:Phase = 1, newdistance = 2
+7:started rank=7, id=1, world = 21
+8:started rank=8, id=9, world = 21
+8:Phase = 1, newdistance = 2
+8:Phase = 2, newdistance = 4
+9:started rank=9, id=17, world = 21
+9:Phase = 1, newdistance = 2
+9:Phase = 2, newdistance = 4
+10:started rank=10, id=4, world = 21
+11:started rank=11, id=12, world = 21
+12:started rank=12, id=20, world = 21
+11:Phase = 1, newdistance = 2
+13:started rank=13, id=7, world = 21
+14:started rank=14, id=15, world = 21
+16:started rank=16, id=10, world = 21
+17:started rank=17, id=18, world = 21
+17:Phase = 1, newdistance = 2
+18:started rank=18, id=5, world = 21
+12:Phase = 1, newdistance = 2
+11:Phase = 2, newdistance = 4
+12:Phase = 2, newdistance = 4
+9:Phase = 3, newdistance = 8
+11:Phase = 3, newdistance = 8
+12:Phase = 3, newdistance = 8
+15:started rank=15, id=2, world = 21
+20:started rank=20, id=0, world = 21
+6:Phase = 2, newdistance = 4
+8:Phase = 3, newdistance = 8
+6:Phase = 3, newdistance = 8
+9:Phase = 4, newdistance = 16
+8:Phase = 4, newdistance = 16
+9:Phase = 5, newdistance = 32
+11:Phase = 4, newdistance = 16
+12:Phase = 4, newdistance = 16
+14:Phase = 1, newdistance = 2
+17:Phase = 2, newdistance = 4
+14:Phase = 2, newdistance = 4
+17:Phase = 3, newdistance = 8
+1:Phase = 3, newdistance = 8
+19:started rank=19, id=13, world = 21
+19:Phase = 1, newdistance = 2
+18:Phase = 1, newdistance = 2
+6:Phase = 4, newdistance = 16
+19:Phase = 2, newdistance = 4
+18:Phase = 2, newdistance = 4
+19:Phase = 3, newdistance = 8
+19:Phase = 4, newdistance = 16
+1:Phase = 4, newdistance = 16
+19:Phase = 5, newdistance = 32
+1:Phase = 5, newdistance = 32
+2:Phase = 2, newdistance = 4
+3:Phase = 4, newdistance = 16
+1:Phase = 6, newdistance = 64
+4:Phase = 4, newdistance = 16
+2:Phase = 3, newdistance = 8
+3:Phase = 5, newdistance = 32
+4:Phase = 5, newdistance = 32
+6:Phase = 5, newdistance = 32
+8:Phase = 5, newdistance = 32
+9:Phase = 6, newdistance = 64
+11:Phase = 5, newdistance = 32
+12:Phase = 5, newdistance = 32
+rank=12, id=20, leader=20, mrecved=27, msent=14
+rank=13, id=7, leader=20, mrecved=16, msent=16
+rank=14, id=15, leader=20, mrecved=16, msent=19
+rank=15, id=2, leader=20, mrecved=18, msent=18
+rank=16, id=10, leader=20, mrecved=19, msent=18
+rank=17, id=18, leader=20, mrecved=27, msent=18
+rank=20, id=0, leader=20, mrecved=29, msent=29
+rank=18, id=5, leader=20, mrecved=28, msent=32
+rank=19, id=13, leader=20, mrecved=27, msent=33
+rank=0, id=8, leader=20, mrecved=30, msent=29
+rank=1, id=16, leader=20, mrecved=31, msent=28
+rank=2, id=3, leader=20, mrecved=28, msent=35
+rank=3, id=11, leader=20, mrecved=28, msent=34
+rank=5, id=6, leader=20, mrecved=27, msent=27
+rank=4, id=19, leader=20, mrecved=34, msent=20
+rank=6, id=14, leader=20, mrecved=29, msent=32
+rank=7, id=1, leader=20, mrecved=33, msent=33
+rank=8, id=9, leader=20, mrecved=29, msent=38
+rank=10, id=4, leader=20, mrecved=27, msent=28
+rank=9, id=17, leader=20, mrecved=32, msent=27
+rank=11, id=12, leader=20, mrecved=24, msent=33
+rlum@voyager:~/Documents/c416/assign2$ 
+

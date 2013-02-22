@@ -9,7 +9,7 @@ or
     make debug // full debugging/progress messages
 
 To run the program
-    make run  // sets path and mpiexec 6 processes. 
+    make run   
 or
     ./setupandrun  // which is called by make run
 or
@@ -18,9 +18,15 @@ or
 
 Notes:
 
-School linux machines appear to have missing link to some needed files
-so the make file calls setupandrun which sets path directories 
-directly to bin files of the mpich installation to compensate.
+This program works on Ubuntu 12.04 using openmpi.  sample output included
+in sampleruns.txt.
+
+School linux machines appear to have missing link to some needed files.
+Compensating by setting path directly to binaries allow compile and run.
+
+This program compiles on deas.ugrad.cs.ubc.ca but segfaults when 
+run under mpiexec for n>=2.  I suspect something wrong with installation
+of mpich on ubc machines.
 
 In debugging mode, most messages start with displaying the rank of the
 process that is reporting the debugging information.  Print buffering
@@ -59,7 +65,10 @@ Operation in phases.
     participating members to stop participating in election and 
     register the leader.
 
-
+unidirectional directory contains unidirectional leader algorithmn
+implementation that was used as a precursor to the bidirectional
+implementation. It compiles with its own makefile in subdirectory
+and runs as expected.
 
 
 

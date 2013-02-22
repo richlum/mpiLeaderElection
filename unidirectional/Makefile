@@ -10,7 +10,7 @@ all:	electleader
 clean:
 	rm electleader 
 run:
-	mpiexec -n 4 ./electleader
+	mpiexec -n 11 ./electleader
 
 
 debug:  electleader.c

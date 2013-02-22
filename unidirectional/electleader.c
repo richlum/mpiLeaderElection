@@ -150,7 +150,7 @@ int main(int argc,char** argv){
 	MPI_Init(&argc,&argv);
 	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 	MPI_Comm_size(MPI_COMM_WORLD,&NUM);
-	printf("%d:size of world = %git d\n",rank, NUM);
+	printf("%d:size of world = %d\n",rank, NUM);
 
 	int id= (rank+1)*PNUM % NUM;
 	printf("%d:started rank=%d, id=%d\n",rank, rank, id);
