@@ -29,7 +29,10 @@ run under mpiexec for n>=2.  I suspect something wrong with installation
 of mpich on ubc machines.
 
 Message counts include every outgoing message, forwarded outgoing message
-incoming message, forwarded incoming message.
+incoming message, forwarded incoming message.  Tested win n=2..12,20,100.
+Always terminates and results are consistent for all nodes.  
+Suspect that there may be extraneous unneeded messages being sent as counts
+are higher than I would have expected.
 
 In debugging mode, most messages start with displaying the rank of the
 process that is reporting the debugging information.  Print buffering

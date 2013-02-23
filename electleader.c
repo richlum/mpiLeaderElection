@@ -18,7 +18,7 @@ int leader=-1;
 int inleft=0;
 int inright=0;
 int inleftandright=0;
-int phase =1;
+int phase =0;
 int NUM;
 
 // send msg to next higher rank
