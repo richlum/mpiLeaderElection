@@ -94,4 +94,41 @@ http://books.google.ca/books?id=NlVBtVPeR0QC&pg=PA111&lpg=PA111&dq=Hirschberg+an
 
 
 
+message complexity
+script yanks out the msent field output when each node announces
+leader that they support and the number of messages sent in total.
+It totals all the messages sent by all nodes.
+
+
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 2 ./electleader | ./sum_msent
+Total = 16
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 3 ./electleader | ./sum_msent
+Total = 27
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 4 ./electleader | ./sum_msent
+Total = 32
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 5 ./electleader | ./sum_msent
+Total = 86
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 6 ./electleader | ./sum_msent
+Total = 86
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 7 ./electleader | ./sum_msent
+Total = 71
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 8 ./electleader | ./sum_msent
+Total = 78
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 9 ./electleader | ./sum_msent
+Total = 187
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 10 ./electleader | ./sum_msent 
+Total = 213
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 20 ./electleader | ./sum_msent 
+Total = 507
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 40 ./electleader | ./sum_msent 
+Total = 1337
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 80 ./electleader | ./sum_msent 
+Total = 3874
+rlum@voyager:~/Documents/c416/assign2$ mpiexec -n 160 ./electleader | ./sum_msent
+Total = 14725
+
+
+It appears on average that roughly doubling nodes results in a little worse
+than rougly doubling in messages...approx consistent with n log n
+
 
