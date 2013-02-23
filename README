@@ -28,6 +28,9 @@ This program compiles on deas.ugrad.cs.ubc.ca but segfaults when
 run under mpiexec for n>=2.  I suspect something wrong with installation
 of mpich on ubc machines.
 
+Message counts include every outgoing message, forwarded outgoing message
+incoming message, forwarded incoming message.
+
 In debugging mode, most messages start with displaying the rank of the
 process that is reporting the debugging information.  Print buffering
 effects are apparent as the print buffer can and does show messages

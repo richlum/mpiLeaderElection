@@ -18,7 +18,7 @@ int leader=-1;
 int inleft=0;
 int inright=0;
 int inleftandright=0;
-int phase =0;
+int phase =1;
 int NUM;
 
 // send msg to next higher rank
@@ -110,10 +110,10 @@ void checkmsgs(int* rank, int* size,int* id){
 		  printf("%d,%d:propagating %d, distance set to %d",*rank,*id, msg.UID, msg.distance);
 #endif
 		  sendmsgNext(&msg, rank, size);
-		}else if ((msg.UID > *id)&&(msg.distance==1)){
+		}else if ((msg.UID > *id)&&(msg.distance<=1)){
 		  //respond to message
 #ifdef DEBUG
-		  printf("%d, respoding to %d, distance = %d\n",*rank, msg.UID,msg.distance);
+		  printf("%d, respoding to uid:%d, distance = %d\n",*rank, msg.UID,msg.distance);
 		  printf("%d: id=%d, type=%d, uid=%d, dist=%d \n", *rank,*id, msg.msgtype, msg.UID, msg.distance); 
 #endif
 		  msg.msgtype=IN;
@@ -143,7 +143,7 @@ void checkmsgs(int* rank, int* size,int* id){
 		  msg.distance--;
 		  DBGMSG
 		  sendmsgPrev(&msg, rank, size);
-		}else if ((msg.UID > *id)&&(msg.distance==1)){
+		}else if ((msg.UID > *id)&&(msg.distance<=1)){
 		  //respond to message
 		  msg.msgtype=IN;
 		  msg.distance=1;
@@ -159,40 +159,43 @@ void checkmsgs(int* rank, int* size,int* id){
 	}else if ((msg.msgtype==IN)){
 	  DBGMSG
 	    if(fromleft(source,*rank,*size)){
-		if (msg.UID==*id){
-		  inleft=1;
-		}else{
-		  DBGMSG
-		  inleft=1;
-		  sendmsgNext(&msg, rank, size);
-		}
-		if (inright)
-		  inleftandright=1;
+            DBGMSG
+	    	if (msg.UID==*id){
+	    	  inleft=1;
+	    	}else{
+	    	  DBGMSG
+	    	  inleft=1;
+	    	  sendmsgNext(&msg, rank, size);
+	    	}
+		    if (inright)
+		        inleftandright=1;
 	    }else{
-		if (msg.UID==*id){
-		  inright=1;
-		  DBGMSG
-		  sendmsgPrev(&msg, rank, size);
-		}
-		if (inleft){
-		  inleftandright=1;
-		}
+            DBGMSG
+		    if (msg.UID==*id){
+		       inright=1;
+		       DBGMSG
+		       sendmsgPrev(&msg, rank, size);
+		    }
+		    if (inleft){
+		       inleftandright=1;
+		    }
 	    }
 	   
-	    //received responses from both sides, we're locally elected 
-	    if (inleftandright){
-		phase++;
+	    //received responses from both sides, we're locally elected
+        // note in 2 node system,cant diff between inleft and inright 
+	    if ((inleftandright)||
+            ((inleft)||(inright))&&(NUM==2))  {
+		    phase++;
       		message msg;
-		msg.msgtype=OUT;
-		msg.distance=pow(2,phase);  // increase distance of voting  based on phase
-		printf("%d,msg.distance=%d\n",*rank,msg.distance);
-		int newsize=msg.distance;
-		msg.UID=*id; 
-		printf("%d:Phase = %d, newdistance = %d\n",*rank,phase, newsize);
-		participant=1;
-		DBGMSG
-		sendmsgNext(&msg,rank,&newsize);
-		sendmsgPrev(&msg,rank,&newsize);
+		    msg.msgtype=OUT;
+	    	msg.distance=pow(2,phase);  // increase distance of voting  based on phase
+		    int newsize=msg.distance;
+		    msg.UID=*id; 
+	    	printf("%d:Phase = %d, newdistance = %d\n",*rank,phase, newsize);
+		    participant=1;
+		    DBGMSG
+		    sendmsgNext(&msg,rank,&newsize);
+		    sendmsgPrev(&msg,rank,&newsize);
 	    }
 	    DBGMSG
 	}else if (msg.msgtype==ELECTED){
